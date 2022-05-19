@@ -22,7 +22,7 @@ const Album = ({ page, data }: IProps) => {
       </div>
     );
   }, [page, data]);
-
+  console.log(data);
   return (
     <div>
       <main>

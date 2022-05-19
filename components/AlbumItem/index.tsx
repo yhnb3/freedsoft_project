@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface IProps {
   item: {
     userId: number;
@@ -7,7 +9,13 @@ interface IProps {
 }
 
 const AlbumItem = ({ item }: IProps) => {
-  return <p>{item.title}</p>;
+  return (
+    <li>
+      <Link href={`/detail/${item.id}`}>
+        <p>{item.title}</p>
+      </Link>
+    </li>
+  );
 };
 
 export default AlbumItem;

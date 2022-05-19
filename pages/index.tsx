@@ -1,33 +1,62 @@
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import { useState, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/router";
+import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
+import { useSetRecoilState } from "recoil";
+import store from "store";
 
 import styles from "../styles/Home.module.css";
-import AlbumItem from "../components/AlbumItem";
-import { IAlbumItem } from "../types";
+import { albumState } from "states/albumState";
 
-const Home: NextPage = ({
-  data,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [page, setPage] = useState(1);
-  const AlbumList = useMemo(() => {
-    const pageAlbumList = data.slice((page - 1) * 5, page * 5);
-    return (
-      <div>
-        <ul>
-          {pageAlbumList.map((item: IAlbumItem) => (
-            <AlbumItem key={item.id} item={item} />
-          ))}
-        </ul>
-      </div>
-    );
-  }, [page, data]);
+const Home: NextPage = () => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [isValidation, setIsValidation] = useState(false);
+  const [idValidate, setIdValidate] = useState(false);
+  const [passwrodIsValidate, setPasswordIsValidate] = useState(false);
+  const setAlbum = useSetRecoilState(albumState);
+  const router = useRouter();
+
+  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+    const lengthValidate = value.length < 8 ? false : true;
+    const numberValidate = /([0-9])+/.test(value);
+    const wordValidate = /([A-Za-z])+/.test(value);
+    if (lengthValidate && numberValidate && wordValidate) {
+      setPasswordIsValidate(true);
+    } else {
+      setPasswordIsValidate(false);
+    }
+    setPassword(event.currentTarget.value);
+  };
+
+  const handleIdChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+    const validationRegx =
+      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (validationRegx.test(value)) {
+      setIdValidate(true);
+    } else {
+      setIdValidate(false);
+    }
+    setId(value);
+  };
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    fetch("https://jsonplaceholder.typicode.com/albums")
+      .then((res) => res.json())
+      .then((data) => {
+        store.set("albumList", data);
+        setAlbum(data);
+        router.push("/album/1");
+      });
+
+    // router.push("/album/1");
+    console.log("submit");
+  };
+
+  // const isAbleButton = idValidate && passwrodIsValidate
 
   return (
     <div className={styles.container}>
@@ -38,34 +67,18 @@ const Home: NextPage = ({
       </Head>
 
       <main className={styles.main}>
-        <h1>앨범</h1>
-        <Link href="/album/1">페이지 1로가기</Link>
+        <form onSubmit={handleSubmit}>
+          <input type="text" onChange={handleIdChange} value={id} />
+          <input
+            type="password"
+            onChange={handlePasswordChange}
+            value={password}
+          />
+          <button type="submit">로그인</button>
+        </form>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   );
 };
 
 export default Home;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/albums");
-  const data = await response.json();
-  return {
-    props: {
-      data,
-    },
-  };
-};
