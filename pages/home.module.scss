@@ -1,0 +1,43 @@
+.loginContainer {
+  width: 300px;
+
+  input {
+    width: 300px;
+    padding: 5px;
+    height: 40px;
+    border: 1px solid;
+    border-radius: 5px;
+  }
+
+  .warningMsg {
+    font-size: 12px;
+    color: red;
+    padding-left: 5px;
+    margin: 10px 0 20px 0;
+
+    &.isValid {
+      visibility: hidden;
+    }
+  }
+
+  label {
+    padding: 0 5px;
+    font-size: 15px;
+    + input {
+      margin-top: 5px;
+    }
+  }
+
+  .loginBtn {
+    margin: 20px 0 0 240px;
+    width: 50px;
+    height: 30px;
+    background-color: grey;
+    color: white;
+    border-radius: 5px;
+
+    &.isValid {
+      background-color: blue;
+    }
+  }
+}
