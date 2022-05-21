@@ -1,0 +1,16 @@
+.paginationContainer {
+  display: flex;
+  width: 500px;
+  margin: 20px 0;
+  justify-content: space-between;
+
+  .pageLink {
+    font-size: 20px;
+    font-weight: 600;
+    color: #aaaaaa;
+
+    &.isValid {
+      color: black;
+    }
+  }
+}

@@ -1,12 +1,16 @@
 import { useState, ChangeEvent, FormEvent, ReactElement } from "react";
 import { useRouter } from "next/router";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import Swal from "sweetalert2";
 import store from "store";
 import cx from "classnames";
 
 import styles from "./home.module.scss";
 import { albumState } from "states/albumState";
 import Layout from "components/Layout";
+import { useMount } from "react-use";
+import { userState } from "states/userState";
+import { ID_BULK } from "data";
 
 function Home() {
   const [id, setId] = useState("");
@@ -17,11 +21,26 @@ function Home() {
   const setAlbum = useSetRecoilState(albumState);
   const router = useRouter();
 
+  interface IUserInfo {
+    id: string;
+    password: string;
+    userId: number;
+  }
+  useMount(() => {
+    const userId = store.get("userId");
+    if (userId) {
+      router.push("/album/1");
+    } else {
+      store.set("albumList", []);
+    }
+  });
+
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     const lengthValidate = value.length < 8 ? false : true;
     const numberValidate = /([0-9])+/.test(value);
     const wordValidate = /([A-Za-z])+/.test(value);
+
     if (!lengthValidate) {
       setPasswordMsg("8자 이상의 비밀번호를 입력하세요.");
     } else if (!wordValidate) {
@@ -51,10 +70,31 @@ function Home() {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    const idIdx = ID_BULK.findIndex((userInfo: IUserInfo) => {
+      return userInfo.id === id;
+    });
+
+    if (idIdx === -1) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 실패",
+        text: "아이디 혹은 비밀번호가 틀렸습니다.",
+      });
+      return;
+    }
+    if (ID_BULK[idIdx].password !== password) {
+      Swal.fire({
+        icon: "error",
+        title: "로그인 실패",
+        text: "아이디 혹은 비밀번호가 틀렸습니다.",
+      });
+      return;
+    }
     fetch("https://jsonplaceholder.typicode.com/albums")
       .then((res) => res.json())
       .then((data) => {
         store.set("albumList", data);
+        store.set("userId", ID_BULK[idIdx].userId);
         setAlbum(data);
         router.push("/album/1");
       });

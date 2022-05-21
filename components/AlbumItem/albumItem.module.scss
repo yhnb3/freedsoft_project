@@ -1,0 +1,11 @@
+.itemContainer {
+  .title {
+    font-size: 13px;
+    color: gray;
+    margin: 5px 0;
+  }
+
+  + .itemContainer {
+    margin-top: 30px;
+  }
+}
