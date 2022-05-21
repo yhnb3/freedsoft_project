@@ -1,9 +1,6 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { ReactElement, useMemo } from "react";
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import { useMount } from "react-use";
-import store from "store";
 
 import styles from "./albumList.module.scss";
 import { albumState } from "states/albumState";
@@ -19,13 +16,8 @@ interface IProps {
 }
 function Album({ page }: IProps) {
   const albumData = useRecoilValue(albumState);
-  const router = useRouter();
 
   useMountCommon();
-
-  const handleClick = () => {
-    router.push("/create");
-  };
 
   const AlbumList = useMemo(() => {
     const pageAlbumList = albumData.slice((page - 1) * 5, page * 5);
@@ -42,9 +34,6 @@ function Album({ page }: IProps) {
       <p className={styles.title}>Freed Album</p>
       <div>{AlbumList}</div>
       <Pagination page={page} dataLen={albumData.length} />
-      <button className={styles.createBtn} onClick={handleClick}>
-        +
-      </button>
     </div>
   );
 }

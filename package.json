@@ -16,7 +16,6 @@
     "react-dom": "18.1.0",
     "react-use": "^17.3.2",
     "recoil": "^0.7.3-alpha.2",
-    "recoil-persist": "^4.1.0",
     "store": "^2.0.12",
     "sweetalert2": "^11.4.14"
   },

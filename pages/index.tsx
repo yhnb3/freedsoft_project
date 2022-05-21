@@ -142,5 +142,5 @@ function Home() {
 export default Home;
 
 Home.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <Layout isLogin={false}>{page}</Layout>;
 };
