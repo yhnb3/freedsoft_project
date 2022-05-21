@@ -19,7 +19,9 @@ Main : `React` , `Typescript`
 
 Build : `next-create-app`
 
- CSS : `sass`
+css : `sass`
+
+상태관리 : `recoil`
 
 others
 
@@ -28,8 +30,6 @@ others
 - `store`
 
 - `sweetalert2`
-
-- `recoil`
 
 - `react-use`
 

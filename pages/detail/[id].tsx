@@ -10,9 +10,10 @@ import Swal from "sweetalert2";
 
 import styles from "./detail.module.scss";
 import Layout from "components/Layout";
-import { albumState, idState } from "states/albumState";
+import { albumState } from "states/albumState";
 import { IAlbumItem } from "types";
 import Pencil from "public/pencil.svg";
+import { userState } from "states/userState";
 
 interface IProps {
   id: number;
@@ -22,7 +23,7 @@ function Detail({ id }: IProps) {
   const [albumData, setAlbumData] = useRecoilState(albumState);
   const [isEditMode, setIsEditMode] = useState(false);
   const [titleValue, setTitleValue] = useState("");
-  const [userId, setId] = useRecoilState(idState);
+  const [userId, setUserId] = useRecoilState(userState);
   const router = useRouter();
 
   useMount(() => {
@@ -31,7 +32,7 @@ function Detail({ id }: IProps) {
     if (!userId) {
       router.push("");
     }
-    setId(userId);
+    setUserId(userId);
     setAlbumData(data);
     const albumIndex = data.findIndex((item: IAlbumItem) => item.id === id);
     const album = data[albumIndex];

@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import { useMount } from "react-use";
 import { useSetRecoilState } from "recoil";
-import { albumState, idState } from "states/albumState";
+import { albumState } from "states/albumState";
+import { userState } from "states/userState";
 import store from "store";
 
 export const useMountCommon = () => {
   const setAlbumData = useSetRecoilState(albumState);
-  const setId = useSetRecoilState(idState);
+  const setUserId = useSetRecoilState(userState);
   const router = useRouter();
 
   useMount(() => {
@@ -16,6 +17,6 @@ export const useMountCommon = () => {
       router.push("/");
     }
     setAlbumData(albumData);
-    setId(id);
+    setUserId(id);
   });
 };
